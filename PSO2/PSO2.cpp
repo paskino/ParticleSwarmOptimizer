@@ -7,11 +7,35 @@
 
 
 #include <iostream>
+#include <cmath>
 #include "Swarm.h"
 #include "Bird.h"
 #include "SortAndRetrieve.h"
 
 using namespace std;
+
+template<typename Value, typename Container> Value function(Container pars){
+
+};
+
+/**
+ * def F(x,pars):
+    f = zeros(len(x))
+    Mz0 = pars[0]
+    T10 = pars[1]
+    for i in range(len(x)):
+        f[i] = Mz0 * sqrt((  (1 - 2 * exp(-x[i] / T10) ) )**2)
+    return f
+ */
+vector<double> f(vector<double> x, vector<double>pars){
+	vector<double> ret = vector<double>(size(x));
+	double Mz0 = pars[0];
+	double T10 = pars[1];
+	for (int i=0;i<size(x);++i){
+		ret[i] = Mz0 * sqrt((  (1 - 2 * exp(-x[i] / T10) ) )*(  (1 - 2 * exp(-x[i] / T10) ) ));
+	}
+	return ret;
+};
 
 int main(){
 	try{
