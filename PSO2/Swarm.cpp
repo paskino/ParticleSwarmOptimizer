@@ -55,15 +55,6 @@ Swarm::~Swarm() {
 }
 
 bool Swarm::initialize(double *bbounds){
-	// random number generator
-	/**
-	 *
-	using my_engine = std::default_random_engine;
-	using my_distribution = uniform_int_distribution<>;
-	my_engine re {};
-	my_distribution zero_to_one {0,1};
-	auto rnd = bind(zero_to_one, re);
-**/
 
 		int n = Swarm::N;
 		Bird mybird = Bird(dims);
@@ -100,20 +91,4 @@ bool Swarm::updatePositionAndVelocity(){
 	return true;
 }
 
-//std::vector<std::pair<int, double>> Swarm::sortByValueKeepIndices(std::vector<double> vec){
-//
-//	std::vector<std::pair<int, double>> pairs;
-//	for (auto itr = vec.begin(); itr != vec.end(); ++itr)
-//	    pairs.push_back(std::pair<int, double> (itr, vec));
-//
-//	sort(pairs.begin(), pairs.end(), [=](std::pair<int, double>& a, std::pair<int, double>& b)
-//		{
-//			return a.second < b.second;
-//		}
-//	);
-//	return pairs;
-//
-//}
-//std::vector<std::pair<int, double>> Swarm::sortGbest(){
-//	return Swarm::sortByValueKeepIndices(Swarm::deltaLbest);
-//}
+

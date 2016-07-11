@@ -14,8 +14,9 @@
 
 using namespace std;
 
-template<typename Value, typename Container> Value function(Container pars){
-
+template<typename F, typename Value, typename Container>
+Value myfunction(F g , Container x, Container pars){
+	return g(x,pars);
 };
 
 /**
@@ -29,13 +30,29 @@ template<typename Value, typename Container> Value function(Container pars){
  */
 vector<double> f(vector<double> x, vector<double>pars){
 	vector<double> ret = vector<double>(size(x));
-	double Mz0 = pars[0];
-	double T10 = pars[1];
+	double a = pars[0];
+	double b = pars[1];
 	for (int i=0;i<size(x);++i){
-		ret[i] = Mz0 * sqrt((  (1 - 2 * exp(-x[i] / T10) ) )*(  (1 - 2 * exp(-x[i] / T10) ) ));
+		ret[i] = a* sin(b*x[i])/x[i];
 	}
 	return ret;
 };
+
+class MultiplyByTwo
+{
+  public:
+    int operator()(int value )
+    {
+      return value*2;
+    }
+};
+
+template< typename F >
+void ffunction( F f, int value )
+{
+ std::cout << "value = " << f(value) << std::endl;
+}
+
 
 int main(){
 	try{
@@ -82,6 +99,18 @@ int main(){
 
 		cout << "sum of vector " << sum(vec,0.0) << "\n";
 		cout << "size of vector " << size(vec) << "\n";
+
+		vector<double> x = vector<double> (20);
+		double i = -3.14;
+		for (int j=0 ; j<20;j++){
+			x[i] = -3.14 + i * (6.28 / 20);
+		}
+		vector<double> pp = vector<double>(2); pp[0] = 1; pp[1]=1;
+		vector<double> y = f(x , pp);
+
+		//vector<double> yy = myfunction(f,x,pp);
+		MultiplyByTwo edo ;
+		ffunction(edo,4);
 
 	} catch (const std::length_error& le) {
 	    std::cerr << "Length error: " << le.what() << '\n';
