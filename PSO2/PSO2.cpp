@@ -13,11 +13,29 @@
 #include "SortAndRetrieve.h"
 
 using namespace std;
-
-template<typename F, typename Value, typename Container>
-Value myfunction(F g , Container x, Container pars){
-	return g(x,pars);
+class MultiplyByTwo
+{
+  public:
+    int operator()(int value )
+    {
+      return value*2;
+    }
 };
+template<typename F, typename Value, typename Container>
+class MyFunction {
+	public:
+		Value operator()(Container x, Container pars){
+			vector<double> ret = vector<double>(size(x));
+				double a = pars[0];
+				double b = pars[1];
+				for (int i=0;i<size(x);++i){
+					ret[i] = a* sin(b*x[i])/x[i];
+				}
+				return ret;
+			return g(x,pars);
+		};
+		Value g(Container, Container);
+	};
 
 /**
  * def F(x,pars):
@@ -38,14 +56,7 @@ vector<double> f(vector<double> x, vector<double>pars){
 	return ret;
 };
 
-class MultiplyByTwo
-{
-  public:
-    int operator()(int value )
-    {
-      return value*2;
-    }
-};
+
 
 template< typename F >
 void ffunction( F f, int value )
