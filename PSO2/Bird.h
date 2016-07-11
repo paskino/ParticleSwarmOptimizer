@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
+#include <limits>
 #include "Swarm.h"
 
 using namespace std;
@@ -25,6 +26,7 @@ public:
 	vector<double> position;
 	vector<double> velocity;
 	vector<double> lbest;
+	double best_dist;
 	int nparams;
 	double * bbounds;
 

@@ -16,6 +16,7 @@ Bird::Bird(int nparams) {
 	velocity = std::vector<double>(nparams, 0.0); // velocity 0
 	lbest = std::vector<double>(nparams);
 	bbounds = nullptr;
+	best_dist = std::numeric_limits<double>::max(); // the max double! Anything is better
 }
 
 Bird::~Bird() {
@@ -141,14 +142,15 @@ void Bird::print(){
 /// Updates the velocity and position of the bird according to the global and local best
 /** Detailed description. */
 void Bird::update_position_and_velocity(const Bird& gbest, const double* cc){
+	/********************
 	//		const double c0 = 0.5 , c1 = 0.5 , c2 = 0.5;
-
 	//		self.velocity = c0 * self.velocity + \
 	//						c1 * random.rand() * (self.globalbest - self.position) + \
 	//						c2 * random.rand() * (self.localbest - self.position)
 	//		self.position = self.position + self.velocity
 	//		#return position, velocity
-	double r1 {rand()}, r2 {rand()};
+	 *************************/
+	double r1 {Bird::rnd()}, r2 {Bird::rnd()};
 	int dims = Bird::nparams;
 
 	while (dims>0){

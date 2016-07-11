@@ -11,30 +11,28 @@
 #include "Swarm.h"
 #include "Bird.h"
 #include "SortAndRetrieve.h"
+#include "FitnessEvaluator.h"
 
-using namespace std;
-class MultiplyByTwo
-{
-  public:
-    int operator()(int value )
-    {
-      return value*2;
-    }
-};
-template<typename F, typename Value, typename Container>
+class MrFunc: public FitnessEvaluator<double, vector<double>>{};
+
+
+
+template< typename Value, typename Container>
 class MyFunction {
 	public:
-		Value operator()(Container x, Container pars){
-			vector<double> ret = vector<double>(size(x));
-				double a = pars[0];
-				double b = pars[1];
-				for (int i=0;i<size(x);++i){
-					ret[i] = a* sin(b*x[i])/x[i];
-				}
-				return ret;
-			return g(x,pars);
+		//F g;
+		Value operator()(Value x, Container pars){
+			Value ret ;
+			Value a = pars[0];
+			Value b = pars[1];
+//			for (int i=0;i<size(x);++i){
+//				if (x[i] == 0 ) ret[i] = a;
+//				else ret[i] = a* sin(b*x[i])/x[i];
+//			}
+			if (x == 0) return a;
+			else return a * sin (b*x)/x;
 		};
-		Value g(Container, Container);
+		//void setFunction(F f) {g = f;} ;
 	};
 
 /**
@@ -51,7 +49,8 @@ vector<double> f(vector<double> x, vector<double>pars){
 	double a = pars[0];
 	double b = pars[1];
 	for (int i=0;i<size(x);++i){
-		ret[i] = a* sin(b*x[i])/x[i];
+		if (x[i] == 0 ) ret[i] = a;
+		else ret[i] = a* sin(b*x[i])/x[i];
 	}
 	return ret;
 };
@@ -63,65 +62,59 @@ void ffunction( F f, int value )
 {
  std::cout << "value = " << f(value) << std::endl;
 }
+template< typename F , typename Container>
+Container ffunction( F f, Container x , Container pp )
+{
+	int n = size(x);
+	Container ret = Container(size(x));
+	for (int i = 0 ; i< size(x); ++i){
+		 ret[i] = f(x[i],pp);
 
+	}
+	return ret;
+}
+int mfunc(int (*p)(int) , int k ) {
+	return p(k);
+}
+
+int sxt(int k) { return k * (k+1) ;}
+
+double prova (double x, vector<double> pars){
+	if ( x == 0 ) return pars[0];
+	else {
+		return pars[0] * sin(pars[1]*x)/x;
+	}
+}
 
 int main(){
 	try{
-		double bb[] = {2.0,3.0, 4.0,5.0};
+		double bb[] = {2.0,3.0, 4.0,5.0}; // bounding box;
 		Swarm my_swarm = Swarm(180,2);
-		//double bb[] = {2.0,3.0, 4.0,5.0};
-		my_swarm.initialize(bb);
-		Bird mb = Bird(2);
-		mb.initialize(bb);
-		mb.print();
-		Bird mb2 = Bird(2);
-		mb2.initialize(bb);
-		mb2.print();
-		Bird mb3 = mb + mb2;
-		mb3.print();
-		Bird mb4 = Bird(2);
-		mb4.set_position(0,1.); mb4.set_position(1,1.);
-		mb3-=mb;
-		mb3.print();
-		cout << "mb4 ";
-		mb4.print();
-		cout << "mb4 *2.0 ";
-		(mb4*2.0).print();
-		// the following does not work! because the first operator is a number.
-		//	cout << "2.0 * mb4 ";
-		//  (2.0*mb4).print();
-		cout << "mb4/2.0 ";
-		(mb4/2.0).print();
 
 
-		std::vector<double> vec = std::vector<double>(4);
-		vec[0] = 4;vec[1] = 3;vec[2] = 2;vec[3] = 1;
-		std::vector<pair<int,double>> sorted = sortByValueKeepIndices(vec);
-
-
-		for (int i=0;i<4;++i){
-			cout << "unsorted[" << i << "]: " << vec[i] << "\n" ;
-		}
-		cout << "\n";
-		for (auto p : sorted){
-			cout << "sorted[" << p.first << "]: " << p.second << "\n" ;
-		}
-		cout << "\n";
-
-		cout << "sum of vector " << sum(vec,0.0) << "\n";
-		cout << "size of vector " << size(vec) << "\n";
 
 		vector<double> x = vector<double> (20);
-		double i = -3.14;
 		for (int j=0 ; j<20;j++){
-			x[i] = -3.14 + i * (6.28 / 20);
+			x[j] = -3.14 + j * (6.28 / 20);
+			std::cout << "x value = " << x[j] << std::endl;
 		}
 		vector<double> pp = vector<double>(2); pp[0] = 1; pp[1]=1;
 		vector<double> y = f(x , pp);
 
+		for (auto p : y){
+			std::cout << "calculated value = " << p << std::endl;
+		}
 		//vector<double> yy = myfunction(f,x,pp);
-		MultiplyByTwo edo ;
-		ffunction(edo,4);
+
+		// defined above
+		FitnessEvaluator<double, vector<double>> F;
+		F.setFunc(prova);
+		vector<double> yy = F(x, pp);
+		cout << "size " << size(yy) << std::endl;
+		for (auto p : yy){
+			std::cout << "pointer func value = " << p << std::endl;
+		}
+		std::cout << "mfunc(2) " << mfunc(sxt,2) << std::endl;
 
 	} catch (const std::length_error& le) {
 	    std::cerr << "Length error: " << le.what() << '\n';
