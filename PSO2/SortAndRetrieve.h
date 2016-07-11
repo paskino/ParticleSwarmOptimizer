@@ -40,11 +40,14 @@ template<typename T>
 template<typename T>
 	int size (const T& );
 
+template<typename T>
+	int len (const T& );
+
 template<typename Container, typename Value>
 	Value sum(const Container& c, Value v);
 
 
-#endif /* SORTANDRETRIEVE_H_ */
+
 
 // Template definition
 template<typename T>
@@ -74,6 +77,11 @@ int size(const T& c){
 	return c.end() - c.begin();
 }
 
+template<typename T>
+int len(const T& c){
+	return c.end() - c.begin();
+}
+
 template<typename Container, typename Value>
 Value sum(const Container& c, Value v){
 	for (auto x:c){
@@ -81,3 +89,4 @@ Value sum(const Container& c, Value v){
 	}
 	return v;
 }
+#endif /* SORTANDRETRIEVE_H_ */
