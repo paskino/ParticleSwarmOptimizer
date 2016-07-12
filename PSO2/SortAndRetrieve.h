@@ -46,6 +46,8 @@ template<typename T>
 template<typename Container, typename Value>
 	Value sum(const Container& c, Value v);
 
+template<typename Container, typename Value>
+	Value sum(const Container& c);
 
 
 

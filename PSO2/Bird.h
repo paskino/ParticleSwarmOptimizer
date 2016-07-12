@@ -37,6 +37,7 @@ public:
 	void set_velocity(int,double);
 	double rnd();
 	void update_position_and_velocity(const Bird&, const double*);
+	void update_position_and_velocity(const vector<double>gbestv, const double* cc);
 	Bird& operator+= (const Bird&); //operates between velocity and position
 	Bird& operator-= (const Bird&); //operates on position
 	Bird& operator*= (const Bird&);

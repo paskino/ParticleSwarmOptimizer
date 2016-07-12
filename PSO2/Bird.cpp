@@ -172,5 +172,11 @@ void Bird::update_position_and_velocity(const Bird& gbest, const double* cc){
 		position[i] = p;
 		--dims;
 	}
-
 }
+void Bird::update_position_and_velocity(const vector<double> gbestv, const double* cc){
+		Bird v = Bird(len(gbestv));
+		for (int i = 0 ; i!= len (gbestv) ; ++i){
+			v.set_position(i, gbestv[i]);
+		}
+		update_position_and_velocity(v, cc);
+	}

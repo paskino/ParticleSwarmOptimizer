@@ -13,108 +13,55 @@
 #include "SortAndRetrieve.h"
 #include "FitnessEvaluator.h"
 
-class MrFunc: public FitnessEvaluator<double, vector<double>>{};
+double tryme (double x, vector<double>pars){
+	double Mz0 = pars[0];
+	double T10 = pars[1];
 
+	double f = (  (1 - 2 * exp(-x / T10) ) );
+	f *= f;
+	f = Mz0 * sqrt(f);
+	return f;
 
+}
 
-template< typename Value, typename Container>
-class MyFunction {
-	public:
-		//F g;
-		Value operator()(Value x, Container pars){
-			Value ret ;
-			Value a = pars[0];
-			Value b = pars[1];
-//			for (int i=0;i<size(x);++i){
-//				if (x[i] == 0 ) ret[i] = a;
-//				else ret[i] = a* sin(b*x[i])/x[i];
-//			}
-			if (x == 0) return a;
-			else return a * sin (b*x)/x;
-		};
-		//void setFunction(F f) {g = f;} ;
-	};
-
-/**
- * def F(x,pars):
-    f = zeros(len(x))
-    Mz0 = pars[0]
-    T10 = pars[1]
-    for i in range(len(x)):
-        f[i] = Mz0 * sqrt((  (1 - 2 * exp(-x[i] / T10) ) )**2)
-    return f
- */
-vector<double> f(vector<double> x, vector<double>pars){
-	vector<double> ret = vector<double>(size(x));
-	double a = pars[0];
-	double b = pars[1];
-	for (int i=0;i<size(x);++i){
-		if (x[i] == 0 ) ret[i] = a;
-		else ret[i] = a* sin(b*x[i])/x[i];
+template<typename Value, typename Container>
+vector<Value> toVector(Container c, Value x0) {
+	int N = sizeof(c);
+	vector<Value> v = vector<Value> (N);
+	for (int i=0;i!=N;++i){
+		v[i] = c[i] - x0;
 	}
-	return ret;
+	return v;
 };
-
-
-
-template< typename F >
-void ffunction( F f, int value )
-{
- std::cout << "value = " << f(value) << std::endl;
-}
-template< typename F , typename Container>
-Container ffunction( F f, Container x , Container pp )
-{
-	int n = size(x);
-	Container ret = Container(size(x));
-	for (int i = 0 ; i< size(x); ++i){
-		 ret[i] = f(x[i],pp);
-
-	}
-	return ret;
-}
-int mfunc(int (*p)(int) , int k ) {
-	return p(k);
-}
-
-int sxt(int k) { return k * (k+1) ;}
-
-double prova (double x, vector<double> pars){
-	if ( x == 0 ) return pars[0];
-	else {
-		return pars[0] * sin(pars[1]*x)/x;
-	}
-}
 
 int main(){
 	try{
-		double bb[] = {2.0,3.0, 4.0,5.0}; // bounding box;
-		Swarm my_swarm = Swarm(180,2);
+		double bb[] = {0.,1000.0, 0.0,1000.0}; // bounding box;
+		Swarm my_swarm = Swarm(200,2);
+
+		my_swarm.setFunc (tryme);
+		my_swarm.setMaxNumberOfIterations(1000);
 
 
+		double raw_x[] = {70.,168.,266.,365.,463.,561.,659.,757.,855.};
+		double raw_y[] = {492.75,  242.75,   50.25,   54.  ,  146.  ,  212.5 ,  264.  ,
+		        307.5 ,  336.5};
+		double raw_dy[] = {13.66336342,   5.06828373,  11.51900603,  10.9772492 ,
+		         5.24404424,  10.98863049,  13.3041347 ,  12.1346611 ,   8.76070773};
+		double par[] = {10,20};
+		vector<double> x = toVector<double>(raw_x,raw_x[0]);
+		vector<double> y = toVector<double>(raw_y,0);
+		vector<double> dy = toVector<double>(raw_dy,0);
+		vector<double> pp = toVector<double>(par,0);
+		my_swarm.setData(x,y,dy);
 
-		vector<double> x = vector<double> (20);
-		for (int j=0 ; j<20;j++){
-			x[j] = -3.14 + j * (6.28 / 20);
-			std::cout << "x value = " << x[j] << std::endl;
-		}
-		vector<double> pp = vector<double>(2); pp[0] = 1; pp[1]=1;
-		vector<double> y = f(x , pp);
+		my_swarm.initialize(bb);
+		std::cout << "initialized!"  << std::endl;
 
-		for (auto p : y){
-			std::cout << "calculated value = " << p << std::endl;
-		}
-		//vector<double> yy = myfunction(f,x,pp);
+		my_swarm.doTheSwarming();
 
-		// defined above
-		FitnessEvaluator<double, vector<double>> F;
-		F.setFunc(prova);
-		vector<double> yy = F(x, pp);
-		cout << "size " << size(yy) << std::endl;
-		for (auto p : yy){
-			std::cout << "pointer func value = " << p << std::endl;
-		}
-		std::cout << "mfunc(2) " << mfunc(sxt,2) << std::endl;
+
+		my_swarm.getGlobalBest().print();
 
 	} catch (const std::length_error& le) {
 	    std::cerr << "Length error: " << le.what() << '\n';

@@ -20,8 +20,9 @@
 template< typename Value, typename Container>
 class FitnessEvaluator {
 		Value (*_func)(Value, Container); // pointer to a function that eats
-										  // Value and Container and
-										  // yields Value
+										  // Value (numeric type) and
+										  // Container (parameters) and
+										  // yields a Value
 	public:
 		Container _data_x;
 		Container _data_y;
@@ -46,6 +47,9 @@ class FitnessEvaluator {
 		void setFunc (Value (*p)(Value, Container)){
 			_func = p; // function to be evaluated
 		};
+		Value evaluate(Value x, Container pars){
+					return _func(x,pars);
+		};
 		void setData(Container x, Container y){
 			if (len(x) != len(y)) throw std::length_error("Data of different length");
 			_data_x = x;
@@ -61,16 +65,23 @@ class FitnessEvaluator {
 				_data_dy = dy;
 			} else throw std::length_error("Data of different length");
 		};
-		Value ChiSquare (Container pars){
-			Value chi2 = 0 ;
+		Value ChiSquare (Container pars , Value chi2){
+			//Value chi2 = 0 ;
 			int N = len(_data_x);
-			if ( _data_dy[0] > 0) {
+			if ( _data_dy[0] > 0) { // FIXME wrong test
 				for (int i=0 ; i <  N; ++i ){
-					chi2 += ( operator()(_data_x[i], pars) - _data_y[i] ) * ( operator()(_data_x[i], pars) - _data_y[i] ) / _data_dy[i];
+					Value ev = evaluate(_data_x[i], pars);
+					Value tchi = ( ev - _data_y[i] );
+					tchi *= tchi;
+					tchi = tchi / _data_dy[i];
+					chi2 += tchi;
 				}
 			} else {
 				for (int i=0 ; i < N ; ++i ){
-					chi2 += ( operator()(_data_x[i], pars) - _data_y[i] ) * ( operator()(_data_x[i], pars) - _data_y[i] );
+					Value ev = evaluate(_data_x[i], pars);
+					Value tchi = ( ev - _data_y[i] );
+					tchi *= tchi;
+					chi2 += tchi;
 				}
 			}
 			return chi2;
